@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= movie.title %> - The Movie Docs</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="/css/style.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-4">
+                <img src="https://image.tmdb.org/t/p/w500<%= movie.poster_path %>" alt="Poster" class="img-fluid rounded">
+            </div>
+            <div class="col-md-8">
+                <h2 class="text-white"><%= movie.title %></h2>
+                <p><strong>Genre:</strong> <%= movie.genres.map(genre => genre.name).join(', ') %></p>
+                <p><strong>Release Date:</strong> <%= movie.release_date %></p>
+                <p><strong>Runtime:</strong> <%= movie.runtime %> minutes</p>
+                <p><strong>Overview:</strong> <%= movie.overview %></p>
+                <p><strong>Rating:</strong> <%= movie.vote_average %> / 10</p>
+                <% if(movie.homepage) { %>
+                    <p><strong>Website:</strong> <a href="<%= movie.homepage %>" target="_blank">Visit</a></p>
+                <% } %>
+                <a href="/" class="btn btn-primary mt-3">Back to Movies</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

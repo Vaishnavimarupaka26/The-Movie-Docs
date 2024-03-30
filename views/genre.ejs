@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Movie Docs</title>
+    <title>Genre Movies - The Movie Docs</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link href="/css/style.css" rel="stylesheet">
 </head>
@@ -15,34 +15,21 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNavDropdown">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Categories
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                            <li><a class="dropdown-item" href="/genre/28">Action</a></li>
-                            <li><a class="dropdown-item" href="/genre/35">Comedy</a></li>
-                            <li><a class="dropdown-item" href="/genre/27">Horror</a></li>
-                        </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Home</a>
                     </li>
                 </ul>
-                <form class="d-flex" action="/search" method="get">
-                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="term">
-                    <button class="btn btn-outline-success" type="submit">Search</button>
-                </form>
             </div>
-        </div>
-    </nav>
-
+        </nav>
 
     <div class="container mt-4">
-        <h1 class="title text-center">Popular Movies</h1>
+        <h1 class="title text-center">Movies in Genre: <%= genreName %></h1>
         <div class="row">
             <% movies.forEach(movie => { %>
                 <div class="col-md-4 mb-4">
                     <div class="card movie-card h-100">
-                        <img src="https://image.tmdb.org/t/p/w500<%= movie.poster_path %>" class="card-img-top movie-image" alt="<%= movie.title %>">
+                        <img src="https://image.tmdb.org/t/p/w500<%= movie.poster_path %>" class="card-img-top" alt="<%= movie.title %>">
                         <div class="card-body">
                             <h5 class="card-title"><%= movie.title %></h5>
                             <p class="card-text"><%= movie.release_date %></p>
@@ -51,12 +38,15 @@
                     </div>
                 </div>
             <% }); %>
+            <% if(movies.length === 0) { %>
+                <p class="text-center">No movies found in this genre.</p>
+            <% } %>
         </div>
-        <nav aria-label="Page navigation">
+        <nav aria-label="Movie genre pagination">
             <ul class="pagination justify-content-center">
                 <% if(currentPage > 1) { %>
                     <li class="page-item">
-                        <a class="page-link" href="/?page=<%= currentPage - 1 %>" aria-label="Previous">
+                        <a class="page-link" href="/genre/<%= genreId %>?page=<%= currentPage - 1 %>" aria-label="Previous">
                             <span aria-hidden="true">&laquo;</span>
                         </a>
                     </li>
@@ -64,11 +54,11 @@
         
                 <% 
                 let startPage = Math.max(1, currentPage - 2);
-                let endPage = Math.min(500, startPage + 4); // Ensure endPage does not exceed 500
-                startPage = Math.max(1, Math.min(endPage - 4, 500 - 4)); // Adjust startPage if necessary
+                let endPage = Math.min(totalPages, startPage + 4); // Ensure endPage does not exceed totalPages
+                startPage = Math.max(1, Math.min(endPage - 4, totalPages - 4)); // Adjust startPage if necessary
         
                 if (startPage > 1) { %>
-                    <li class="page-item"><a class="page-link" href="/?page=1">1</a></li>
+                    <li class="page-item"><a class="page-link" href="/genre/<%= genreId %>?page=1">1</a></li>
                     <% if (startPage > 2) { %>
                         <li class="page-item disabled"><span class="page-link">...</span></li>
                     <% } %>
@@ -76,20 +66,20 @@
         
                 <% for(let i = startPage; i <= endPage; i++) { %>
                     <li class="page-item <%= i === currentPage ? 'active' : '' %>">
-                        <a class="page-link" href="/?page=<%= i %>"><%= i %></a>
+                        <a class="page-link" href="/genre/<%= genreId %>?page=<%= i %>"><%= i %></a>
                     </li>
                 <% } %>
         
-                <% if (endPage < 500) { %>
-                    <% if (endPage < 499) { %>
+                <% if (endPage < totalPages) { %>
+                    <% if (endPage < totalPages - 1) { %>
                         <li class="page-item disabled"><span class="page-link">...</span></li>
                     <% } %>
-                    <li class="page-item"><a class="page-link" href="/?page=500">500</a></li>
+                    <li class="page-item"><a class="page-link" href="/genre/<%= genreId %>?page=<%= totalPages %>"><%= totalPages %></a></li>
                 <% } %>
         
-                <% if(currentPage < 500) { %>
+                <% if(currentPage < totalPages) { %>
                     <li class="page-item">
-                        <a class="page-link" href="/?page=<%= currentPage + 1 %>" aria-label="Next">
+                        <a class="page-link" href="/genre/<%= genreId %>?page=<%= currentPage + 1 %>" aria-label="Next">
                             <span aria-hidden="true">&raquo;</span>
                         </a>
                     </li>
@@ -97,6 +87,8 @@
             </ul>
         </nav>
     </div>
+
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>

@@ -5,6 +5,14 @@ const router = express.Router();
 
 require('dotenv').config();
 
+
+const genreMapping = {
+    '28': 'Action',
+    '35': 'Comedy',
+    '27': 'Horror',
+};
+
+
 const API_KEY = process.env.TMDB_API_KEY;
 
 router.get('/', async (req, res) => {
@@ -21,6 +29,7 @@ router.get('/', async (req, res) => {
         res.status(500).send('Error fetching movies.');
     }
 });
+
 
 router.get('/search', async (req, res) => {
     const searchTerm = req.query.term;
@@ -48,5 +57,37 @@ router.get('/search', async (req, res) => {
     }
 });
 
+
+router.get('/movie/:id', async (req, res) => {
+    const movieId = req.params.id;
+    try {
+        const response = await axios.get(`https://api.themoviedb.org/3/movie/${movieId}?api_key=${API_KEY}`);
+        res.render('movie-details', { movie: response.data });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error fetching movie details.');
+    }
+});
+
+
+router.get('/genre/:genreId', async (req, res) => {
+    const { genreId } = req.params;
+    let page = parseInt(req.query.page) || 1;
+    page = Math.max(1, Math.min(page, 500));
+
+    try {
+        const response = await axios.get(`https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&with_genres=${genreId}&page=${page}`);
+        res.render('genre', {
+            movies: response.data.results,
+            currentPage: page,
+            totalPages: Math.min(response.data.total_pages, 500),
+            genreId: genreId,
+            genreName: genreMapping[genreId]
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error fetching movies by genre.');
+    }
+});
 
 module.exports = router;
