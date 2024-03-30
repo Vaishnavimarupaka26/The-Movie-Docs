@@ -22,4 +22,31 @@ router.get('/', async (req, res) => {
     }
 });
 
+router.get('/search', async (req, res) => {
+    const searchTerm = req.query.term;
+    let page = parseInt(req.query.page) || 1;
+    page = Math.max(1, Math.min(page, 500));
+
+    if (!searchTerm) {
+        res.redirect('/');
+        return;
+    }
+
+    try {
+        const response = await axios.get(`https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(searchTerm)}&page=${page}`);
+        const totalPages = Math.min(response.data.total_pages, 500);
+
+        res.render('search-results', {
+            searchResults: response.data.results,
+            searchTerm,
+            currentPage: page,
+            totalPages: totalPages
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error performing search.');
+    }
+});
+
+
 module.exports = router;
