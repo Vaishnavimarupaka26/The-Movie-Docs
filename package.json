@@ -1,11 +1,8 @@
 {
-  "name": "the-movie-docs",
+  "name": "multi-page-web-app",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -17,6 +14,14 @@
   },
   "devDependencies": {
     "jest": "^29.7.0",
-    "nodemon": "^3.1.0"
+    "jest-mock-axios": "^4.7.3",
+    "nodemon": "^3.1.0",
+    "supertest": "^6.3.4"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "jest": {
+    "testEnvironment": "node"
   }
 }
